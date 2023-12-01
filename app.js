@@ -15,7 +15,7 @@ app.set('view engine', 'ejs');  // Set the view engine to EJS
 app.get('/', (req, res) => {
     res.send('GlucoMonitor');
 });
-
+//test
 app.post('/existing_user/checkID', (req, res) => {
     const userID = req.body.ssn;
     console.log("CheckID route hit with ID:", userID);
