@@ -62,11 +62,14 @@
 <body>
     <div class="container">
         <h2>Existing User - GlucoMonitor</h2>
-
-        <form id="userForm" action="/existing_user/checkID" method="post">
+        <!--form id="userForm" action="/existing_user/checkID" method="post"></form-->
+        <form id="userForm" action="/read" method="get">
             <label for="ssn">ID:</label>
-            <input type="text" id="ssn" name="ssn" required>
-            
+            <input type="text" id="ssn" name="id" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password"  required>
+
             <button type="submit">Submit</button>
             <p id="msg"></p>
 
@@ -81,7 +84,7 @@
     </div>
     
     <!-- Adding JavaScript to toggle the visibility of extra fields -->
-    <script>
+    <!-- <script>
         let myChart = null;
         document.getElementById("userForm").addEventListener("submit", function(event) {
             event.preventDefault(); // Prevents the default form submission
@@ -145,6 +148,6 @@
                 document.getElementById("msg").textContent = "An error occurred. Please try again.";
             });
         });
-    </script>    
+    </script>     -->
 </body>
 </html>
