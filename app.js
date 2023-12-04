@@ -2,17 +2,21 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const fileUpload = require('express-fileupload');
-const Person = require('./modules/db');
+const newUserHandler = require('./hendlers/newUserHandler');
+const existingUserHandler = require('./hendlers/existingUserHandler');
 
+const app = express();
+const PORT = 3000;
+let user = '';
 //const patientsFilePath = path.join(__dirname, 'mocData', 'patients.json');
 //const data = JSON.parse(fs.readFileSync(patientsFilePath, 'utf-8'));
 //const patientsData = data.patients;
 //console.log(patientsData);
-const app = express();
+
 app.use(express.json());
 app.set('view engine', 'ejs');  // Set the view engine to EJS
 
-const PORT = 3000;
+
 app.listen(PORT, () => {
     console.log(`Server is running at http://localhost:${PORT}`);
 });
@@ -39,27 +43,27 @@ app.post('/existing_user/checkID', (req, res) => {
 });
 
 
-app.post('/existing_user/addEntry', (req, res) => {
-    const userID = req.body.ssn;
-    const entry = {
-        date: req.body.date,
-        food: req.body.food,
-        sugarLevelAfterTwoHours: req.body.sugarLevelAfterTwoHours
-    };
+// app.post('/existing_user/addEntry', (req, res) => {
+//     const userID = req.body.ssn;
+//     const entry = {
+//         date: req.body.date,
+//         food: req.body.food,
+//         sugarLevelAfterTwoHours: req.body.sugarLevelAfterTwoHours
+//     };
     
-    const userIndex = patientsData.findIndex(patient => patient.id === userID);
+//     const userIndex = patientsData.findIndex(patient => patient.id === userID);
     
-    if (userIndex === -1) {
-        return res.status(404).json({ message: 'User does not exist' });
-    }
+//     if (userIndex === -1) {
+//         return res.status(404).json({ message: 'User does not exist' });
+//     }
 
-    patientsData[userIndex].documentation.push(entry);
+//     patientsData[userIndex].documentation.push(entry);
     
-    // Save updated data back to patients.json
-    fs.writeFileSync(patientsFilePath, JSON.stringify(patientsData, null, 2));
+//     // Save updated data back to patients.json
+//     fs.writeFileSync(patientsFilePath, JSON.stringify(patientsData, null, 2));
     
-    res.json({ message: 'Entry added successfully!' });
-});
+//     res.json({ message: 'Entry added successfully!' });
+// });
 
 app.get('/login', (req, res) => {
     res.render('login'); // Note that we use 'logins' because your file name is logins.ejs
@@ -106,43 +110,29 @@ app.post('/get-patient-data-date-range', (req, res) => {
         res.status(404).send('Patient not found');
     }
 });
-app.post('/completeRegistration', (req, res) => {
-    // Get the file that was set to our field named "picture"   
-  picture=req.files.picture   
-  picture.mv('public/images/' +picture.name);
-  res.send('Done!')
-});
 
-app.get('/save', async (req, res) => {   
-    let person = new Person(req.query);
-    console.log(req.query.password)
-    try {
-        await person.save();
-        res.status(201).send(person);
+app.post('/getExistingUser', async (req, res) => existingUserHandler.GetPatientData(req, res));
+app.post('/saveNewUser', async (req, res) =>{
+    try
+    {
+        await newUserHandler.addPatient(req, res);
+        console.log('addPatient finnished OK, start GetPatientData')
+        await existingUserHandler.GetPatientData(req, res);
     } catch (error) {
-        res.status(500).send(person);
+
     }
 });
-app.get('/read', async (req, res) => {
-    var parameterId=req.query.id
-   // console.log(parameterId)
-    var parameterPass=req.query.password
-    var name = "dror"
-    try {
-        const people = await Person.find({"firstName":"dror"});  
-        console.log(people)      
-        var result={people:people}
-        res.status(201).send(result);
-       // res.render("pages/persondata",result)
+//app.post('/existing_user/addEntry', async (req, res) => existingUserHandler.AddEntryToPatientData(req, res));
+app.post('/existing_user/addEntry', async (req, res) => {
+    try 
+    {
+        await existingUserHandler.AddEntryToPatientData(req, res);
+        console.log('AddEntryToPatientData finnished OK, start GetPatientData')
+        await existingUserHandler.GetPatientData(req, res);
     } catch (error) {
-        res.status(500).send(error);
+        console.error(error);
     }
 });
-
-
-function checkFaceImg(){
-
-}
 
 function showUserDetails(userName) {
     // Set the user name in the welcome message

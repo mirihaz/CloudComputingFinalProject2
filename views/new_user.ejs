@@ -61,24 +61,26 @@
     <div class="container">
         <h2>Register for GlucoMonitor</h2>
 
-        <form id="firstUserForm" action="/save" method="get">
+        <form id="firstUserForm" action="/saveNewUser" method="post" enctype="multipart/form-data">
             <label for="ssn">ID:</label>
             <input type="text" id="id" name="id" pattern="[0-9]{9}" title="Please enter a 9-digit number" required>
-
-            <!-- <label for="email">Email Address:</label>
-            <input type="text" id="email" name="email" required> -->
-
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password"  required>
             
             <label for="firstName">name:</label>
             <input type="text" id="firstName" name="firstName"  required>
-            <!-- <label for="confirmPassword">Confirm Password:</label>
-            <input type="password" id="confirmPassword" name="confirmPassword" required> -->
+            
+            <label for="lastName">Last name:</label>
+            <input type="text" id="lastName" name="lastName" required/>
+
+            <label for="birthDate">Date of birth:</label>
+            <input type="date" id="birthDate" name="birthDate" required/>
+
+            <label for="faceImg">Face image:</label>
+            <input type="file" id="picture" name="picture" accept='image/*' style="direction:rtl"/>
+
+            <label for="glucoseLevel">Current glucose level:</label>
+            <input type="text" id="glucoseLevel" name="glucoseLevel" required/>
 
             <button type="submit">Register</button>
-            <!-- button onclick="location.href='/register'">Register</button> -->
-
         </form>
     </div>
 </body>

@@ -63,12 +63,9 @@
     <div class="container">
         <h2>Existing User - GlucoMonitor</h2>
         <!--form id="userForm" action="/existing_user/checkID" method="post"></form-->
-        <form id="userForm" action="/read" method="get">
-            <label for="ssn">ID:</label>
-            <input type="text" id="ssn" name="id" required>
-
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password"  required>
+        <form id="userForm" action="/getExistingUser" method="post" enctype="multipart/form-data">
+            <label for="id">ID:</label>
+            <input type="text" id="id" name="id" required>
 
             <button type="submit">Submit</button>
             <p id="msg"></p>
@@ -89,14 +86,11 @@
         document.getElementById("userForm").addEventListener("submit", function(event) {
             event.preventDefault(); // Prevents the default form submission
             
-            const ssnValue = document.getElementById("ssn").value;
+            const ssnValue = document.getElementById("id").value;
     
             // Use fetch to make an asynchronous POST request to the server
-            fetch("/existing_user/checkID", {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+            fetch("/existing_user/checkID", {method: "POST", 
+                headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ ssn: ssnValue })
             })
             .then(response => response.json())

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <title>User Information</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f4f4f4;
+                margin: 0;
+                padding: 0;
+            }
+
+            .container {
+                max-width: 600px;
+                margin: 50px auto;
+                background: #fff;
+                padding: 30px;
+                border-radius: 5px;
+                box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            h2 {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+
+            label {
+                display: block;
+                margin: 10px 0;
+            }
+
+            input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            }
+
+            button {
+                display: block;
+                width: 20%;
+                padding: 10px;
+                background-color: #007bff;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                margin-top: 10px;
+            }
+
+            button:hover {
+                background-color: #0056b3;
+            }
+
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <h2>User Information</h2>
+
+            <% if (people.length > 0) { %>
+            <% people.forEach(person => { %>
+                <div>
+                <h3>Welcome: <%= person.firstName %> <%= person.lastName %></h3>
+                </div>
+                <form id="extraFieldsForm" action="/existing_user/addEntry" method="post" enctype="multipart/form-data">
+        
+                    <h3 class="new-measurement-title">Please Add Your New Measurement:</h3>
+                    
+                    <!-- Hidden input for patient ID -->
+                    <input type="hidden" name="id" value="<%= person.id %>">
+                    
+                    <div class="input-group">
+                        <label for="date">Date:</label>
+                        <input type="date" id="date" name="date" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="food">Food:</label>
+                        <input type="text" id="food" name="food" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="sugarLevelAfterTwoHours">Sugar Level After Two Hours:</label>
+                        <input type="number" id="sugarLevelAfterTwoHours" name="sugarLevelAfterTwoHours" required>
+                    </div>
+                    <button type="submit">Submit Entry</button>
+                    <% if (typeof successMessage !== 'undefined' && successMessage !== null && successMessage.length > 0) { %>
+                        <p class="success-message"><%= successMessage %></p>
+                    <% } else if (typeof errorMessage  !== 'undefined' && errorMessage  !== null && errorMessage .length > 0) { %>
+                        <p class="error-message"><%= errorMessage %></p>
+                    <% } %>
+                </form>
+                <div id="userDetails" style="display: none;">
+                    <h3>Welcome, <span id="userName"></span></h3>
+                    <canvas id="sugarChart" width="400" height="200"></canvas>
+                    
+                    
+                </div>
+            <% }) %>
+            <% } else { %>
+            <p>No user found with the provided ID. Try again</p>
+            <button type="back">Back</button>
+            <% } %>
+        </div>
+       
+    </body>
+</html>
