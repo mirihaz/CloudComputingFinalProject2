@@ -63,8 +63,7 @@
         <div class="container">
             <h2>User Information</h2>
 
-            <% if (people.length > 0) { %>
-            <% people.forEach(person => { %>
+            <% if (person) { %>
                 <div>
                 <h3>Welcome: <%= person.firstName %> <%= person.lastName %></h3>
                 </div>
@@ -94,18 +93,156 @@
                         <p class="error-message"><%= errorMessage %></p>
                     <% } %>
                 </form>
-                <div id="userDetails" style="display: none;">
-                    <h3>Welcome, <span id="userName"></span></h3>
+
+                <form id="dateRangeForm" method="post" onsubmit="return validateForm()">
+                    <div class="input-group">
+                        <label for="startDate">Start Date:</label>
+                        <input type="date" id="startDate" name="startDate" required ">>
+                    </div>
+                    <div class="input-group">
+                        <label for="endDate">End Date:</label>
+                        <input type="date" id="endDate" name="endDate" required ">>
+                    </div>
+                    <!--input type="hidden" name="id" value="<%= person.id %>"-->
+                    <button type="button" id="filterButton" onclick="return setChart()">
+                        Filter Data
+                    </button>
+                </form>
+
+                <script type="application/json" id="measurementData">
+                    <%- JSON.stringify({
+                        conditionsSummary: person.conditionsSummary,
+                       
+                    })%>
+                </script>
+                          
+                <!-- Inside user_info.ejs after the form element -->
+                <div id="graphContainer">
+                    <h3>Sugar Level Measurements</h3>
                     <canvas id="sugarChart" width="400" height="200"></canvas>
-                    
-                    
                 </div>
-            <% }) %>
+
+
             <% } else { %>
             <p>No user found with the provided ID. Try again</p>
             <button type="back">Back</button>
             <% } %>
+            
         </div>
-       
+
+        <script>
+            
+            function setChart() 
+            {
+                console.log('validateForm');
+                const startDate = document.getElementById('startDate').value;
+                const endDate = document.getElementById('endDate').value;
+                const measurementDataElement = document.getElementById('measurementData');
+                const measurementData = JSON.parse(measurementDataElement.textContent);
+                
+                console.log('startDate:',startDate,' ,endDate: ', endDate,', measurementData: ', measurementData);
+
+                //start gragh:
+                if (typeof measurementData  !== 'undefined' && measurementData  !== null )
+                {              
+                    const measurements = measurementData.conditionsSummary;
+                    console.log('measurements: ', measurements);
+
+                    // Check if filtering should be applied
+                    const shouldFilter = (startDate!=='') && (endDate !=='');
+                    console.log('Should Filter:', shouldFilter);
+                    
+                    //get filterd measurments:
+                    const filteredMeasurements = shouldFilter
+                        ? measurements.filter(measurement => {
+                            const measurementDate = new Date(measurement.c1HbAdate);
+                            return measurementDate >= new Date(startDate) && measurementDate <= new Date(endDate);
+                    })
+                    : measurements;
+                    const ctx = document.getElementById('sugarChart').getContext('2d');
+                    console.log('start if:',sugarChart.style);
+
+                    measurements.sort((a, b) => new Date(a.c1HbAdate) - new Date(b.c1HbAdate));
+
+                    // Check if a chart instance already exists
+                    if(!(sugarChart instanceof Chart)) {
+                        console.log('createChart: ', filteredMeasurements);
+                        createChart(ctx, filteredMeasurements);
+                    } else {
+                        console.log('updateChart: ', filteredMeasurements);
+                        updateChart(sugarChart, filteredMeasurements);
+                    }
+                } else {
+                    console.log('No measurement data available');
+                }            
+            }
+
+            function createChart(ctx, measurements) 
+            {
+                const labels = measurements.map(measurement => new Date(measurement.c1HbAdate).toLocaleDateString('en-US'));
+                const dataPoints = measurements.map(measurement => measurement.c1HbA);
+
+                sugarChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Sugar Level (mg/dL)',
+                            data: dataPoints,
+                            borderColor: 'rgb(54, 162, 235)',
+                            backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                            borderWidth: 2,
+                            pointRadius: 3,
+                            fill: false,
+                            tension: 0.1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                suggestedMin: 70, // Minimum value for y-axis
+                                suggestedMax: 140, // Maximum value for y-axis
+                                title: {
+                                    display: true,
+                                    text: 'Sugar Level (mg/dL)'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Date of Measurement'
+                                }
+                            }
+                        },
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Sugar Level Over Time'
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Function to update an existing chart
+            function updateChart(chart, measurements) 
+            {
+                const labels = measurements.map(measurement => new Date(measurement.c1HbAdate).toLocaleDateString('en-US'));
+                const dataPoints = measurements.map(measurement => measurement.c1HbA);
+
+                // Update the chart's data
+                chart.data.labels = labels;
+                chart.data.datasets[0].data = dataPoints;
+
+                // Update the chart
+                chart.update();
+            }
+
+        </script>        
     </body>
 </html>

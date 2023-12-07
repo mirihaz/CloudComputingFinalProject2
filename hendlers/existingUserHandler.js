@@ -1,4 +1,4 @@
-const Person = require('../models/patientDB');
+const Person = require('../models/patientDBModel');
 
 class existingUserHandler
 {
@@ -7,14 +7,20 @@ class existingUserHandler
 		console.log('GetPatientData- request:', req.body);
         let parameterId=req.body.id;
 
-        try 
-        {
-            const people = await Person.find({"id":parameterId});  
-            console.log('GetPatientData:',people);      
-             
-            let result={people:people}
-            //res.status(201).send(result);
-            res.render('user_info', { people: people });
+        try {
+          // Use findOne to get a single document
+          const person = await Person.findOne({ "id": parameterId });
+          console.log('GetPatientData:', person);
+
+          // Check if person is found and has conditionsSummary
+          if (person && person.conditionsSummary) {
+              console.log('First entry in conditionsSummary:', person.conditionsSummary[0]);
+              res.render('user_info', { person: person });
+          } else {
+              // Handle the case where no person is found or conditionsSummary is missing
+              console.log('No person found or conditionsSummary is missing');
+              res.render('user_info', { person: null });
+          }
          } catch (error) {
             console.log('GetPatientData - error:', error);
             res.status(500).send({error: error.message});

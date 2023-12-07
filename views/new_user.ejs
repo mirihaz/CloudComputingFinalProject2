@@ -60,8 +60,12 @@
 <body>
     <div class="container">
         <h2>Register for GlucoMonitor</h2>
-
-        <form id="firstUserForm" action="/saveNewUser" method="post" enctype="multipart/form-data">
+        <% if (typeof errorMessage  !== 'undefined' && errorMessage  !== null && errorMessage .length > 0){%>
+            <div style="color: red; text-align: center;">
+                <%= errorMessage %>
+            </div>
+        <% } %>
+        <form id="firstUserForm" action="/saveNewUser" method="post" onsubmit="return validateForm()" enctype="multipart/form-data">
             <label for="ssn">ID:</label>
             <input type="text" id="id" name="id" pattern="[0-9]{9}" title="Please enter a 9-digit number" required>
             
@@ -83,6 +87,21 @@
             <button type="submit">Register</button>
         </form>
     </div>
+    <script>
+        function validateForm() {
+            var birthDateInput = document.getElementById('birthDate');
+            var enteredDate = new Date(birthDateInput.value);
+            var currentDate = new Date();
+        
+            // Check if the entered date is valid and not greater than today
+            if (isNaN(enteredDate) || enteredDate > currentDate) {
+                alert('Please enter a valid date that is not greater than today.');
+                return false; // Prevent form submission
+            }
+        
+            return true; // Allow form submission
+        }
+        </script>
 </body>
 
 </html>

@@ -14,7 +14,7 @@ const personSchema = new mongoose.Schema({
     firstName: String,
     lastName: String,
     birthDate:Date,
-  //  picture: String, 
+    picture: String, 
     conditionsSummary : [
         {
             c1HbA : Number,
