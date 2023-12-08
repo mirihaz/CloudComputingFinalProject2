@@ -21,16 +21,23 @@
                 padding: 30px;
                 border-radius: 5px;
                 box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+
             }
 
             h2 {
                 text-align: center;
                 margin-bottom: 20px;
             }
+            h4 {
+                text-align: center;
+                margin-bottom: 20px;
+                color: #0056b3;
+            }
 
             label {
                 display: block;
                 margin: 10px 0;
+                size: 20px;
             }
 
             input[type="text"], input[type="password"] {
@@ -55,17 +62,22 @@
             button:hover {
                 background-color: #0056b3;
             }
+            .input-group {
+                display: inline-block; /* Display divs inline-block */
+                margin-right: 20px; /* Add some space between the fields */
+            }
+            .spacer {
+                height: 20px;
+            }
 
         </style>
     </head>
 
     <body>
         <div class="container">
-            <h2>User Information</h2>
-
             <% if (person) { %>
                 <div>
-                <h3>Welcome: <%= person.firstName %> <%= person.lastName %></h3>
+                <h2>Welcome <%= person.firstName %> <%= person.lastName %></h2>
                 </div>
                 <form id="extraFieldsForm" action="/existing_user/addEntry" method="post" enctype="multipart/form-data">
         
@@ -74,9 +86,11 @@
                     <!-- Hidden input for patient ID -->
                     <input type="hidden" name="id" value="<%= person.id %>">
                     
-                    <div class="input-group">
+                    <div class="input-group-main">
                         <label for="date">Date:</label>
-                        <input type="date" id="date" name="date" required>
+                        <!--input type="date" id="date" name="date" required-->
+                        <input type="datetime-local" id="date" name="date" required>
+
                     </div>
                     <div class="input-group">
                         <label for="food">Food:</label>
@@ -84,30 +98,35 @@
                     </div>
                     <div class="input-group">
                         <label for="sugarLevelAfterTwoHours">Sugar Level After Two Hours:</label>
-                        <input type="number" id="sugarLevelAfterTwoHours" name="sugarLevelAfterTwoHours" required>
+                        <input type="text" id="sugarLevelAfterTwoHours" name="sugarLevelAfterTwoHours"
+                                pattern="\d+(\.\d+)?"  title="Please enter a number" required>
                     </div>
                     <button type="submit">Submit Entry</button>
+                    <div class="spacer"></div>
+
                     <% if (typeof successMessage !== 'undefined' && successMessage !== null && successMessage.length > 0) { %>
                         <p class="success-message"><%= successMessage %></p>
                     <% } else if (typeof errorMessage  !== 'undefined' && errorMessage  !== null && errorMessage .length > 0) { %>
                         <p class="error-message"><%= errorMessage %></p>
                     <% } %>
                 </form>
-
-                <form id="dateRangeForm" method="post" onsubmit="return validateForm()">
+                <div class="spacer"><hr></hr></div>
+                <form id="dateRangeForm" method="post" >
+                    <h3>Select dates to display history</h3>
                     <div class="input-group">
                         <label for="startDate">Start Date:</label>
-                        <input type="date" id="startDate" name="startDate" required ">>
+                        <input type="date" id="startDate" name="startDate" required>
                     </div>
                     <div class="input-group">
                         <label for="endDate">End Date:</label>
-                        <input type="date" id="endDate" name="endDate" required ">>
+                        <input type="date" id="endDate" name="endDate" required>
                     </div>
                     <!--input type="hidden" name="id" value="<%= person.id %>"-->
                     <button type="button" id="filterButton" onclick="return setChart()">
-                        Filter Data
+                        Show Data
                     </button>
                 </form>
+
 
                 <script type="application/json" id="measurementData">
                     <%- JSON.stringify({
@@ -118,14 +137,13 @@
                           
                 <!-- Inside user_info.ejs after the form element -->
                 <div id="graphContainer">
-                    <h3>Sugar Level Measurements</h3>
                     <canvas id="sugarChart" width="400" height="200"></canvas>
                 </div>
 
 
             <% } else { %>
             <p>No user found with the provided ID. Try again</p>
-            <button type="back">Back</button>
+            <button type="back" onclick="location.href='/existing_user'">Back</button>
             <% } %>
             
         </div>
@@ -222,7 +240,8 @@
                             },
                             title: {
                                 display: true,
-                                text: 'Sugar Level Over Time'
+                                text: 'Sugar Level Over Time',
+                                fontSize:50
                             }
                         }
                     }

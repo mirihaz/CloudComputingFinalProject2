@@ -12,7 +12,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-image: url('C:/CloudComputingFinalProject/public/images/health-bg.jpg');
+            background-image: url('public\images\health-bg.jpg');
             background-size: cover;
             background-position: center;
         }
@@ -22,11 +22,12 @@
             padding: 20px;
             border-radius: 5px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 300px;
+            width:500px;
+            height:300px;
         }
 
         button {
-            background-color: #4CAF50;
+            background-color: #199f51;
             color: white;
             padding: 10px 15px;
             margin: 10px 0;
@@ -36,8 +37,13 @@
         }
 
         button:hover {
-            background-color: #45a049;
+            background-color: #199f51;
         }
+        h2 {
+                text-align: center;
+                margin-bottom: 20px;
+        }
+
     </style>
     <script>
         function toggleSSNBox() {
@@ -53,7 +59,7 @@
 
 <body>
     <div class="container">
-        <h2>Welcome to GlucoMonitor test miri</h2>
+        <h2>Welcome to GlucoMonitor</h2>
         <p>Select a login method:</p>
         <button onclick="location.href='/existing_user'">Log in with an existing user</button>
         <button onclick="location.href='/new_user'">Register as a new user</button>

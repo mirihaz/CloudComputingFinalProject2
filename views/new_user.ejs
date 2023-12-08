@@ -67,7 +67,7 @@
         <% } %>
         <form id="firstUserForm" action="/saveNewUser" method="post" onsubmit="return validateForm()" enctype="multipart/form-data">
             <label for="ssn">ID:</label>
-            <input type="text" id="id" name="id" pattern="[0-9]{9}" title="Please enter a 9-digit number" required>
+            <input type="text" id="id" name="id" pattern="[0-9]{9}" title="Please enter a 9-digit number" required autofocus>
             
             <label for="firstName">name:</label>
             <input type="text" id="firstName" name="firstName"  required>

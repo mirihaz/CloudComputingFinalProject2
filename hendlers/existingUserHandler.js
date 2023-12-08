@@ -33,6 +33,7 @@ class existingUserHandler
         let patientId=req.body.id;
         console.log(patientId);
         let newCondition = {
+            food: req.body.food,
             c1HbA: req.body.sugarLevelAfterTwoHours, 
             c1HbAdate: req.body.date
         };

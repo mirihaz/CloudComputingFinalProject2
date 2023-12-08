@@ -42,7 +42,7 @@
 
         button {
             display: block;
-            width: 100%;
+            width: 104%;
             padding: 10px;
             background-color: #007bff;
             color: white;
@@ -65,7 +65,7 @@
         <!--form id="userForm" action="/existing_user/checkID" method="post"></form-->
         <form id="userForm" action="/getExistingUser" method="post" enctype="multipart/form-data">
             <label for="id">ID:</label>
-            <input type="text" id="id" name="id" required>
+            <input type="text" id="id" name="id" pattern="[0-9]{9}" title="Please enter a 9-digit number" required autofocus>
 
             <button type="submit">Submit</button>
             <p id="msg"></p>

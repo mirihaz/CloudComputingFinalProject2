@@ -17,6 +17,7 @@ const personSchema = new mongoose.Schema({
     picture: String, 
     conditionsSummary : [
         {
+            food: String,
             c1HbA : Number,
             c1HbAdate : {type: Date, default: Date.now, },           
         },
